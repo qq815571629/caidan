@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家常菜点菜程序</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f5f0;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            color: white;
+            padding: 25px 0;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: #ffd700;
+        }
+        
+        .cart-summary {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .cart-summary:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .cart-summary i {
+            font-size: 1.5rem;
+        }
+        
+        .cart-count {
+            background-color: #ffd700;
+            color: #333;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .cart-total {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .menu-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            color: #c0392b;
+        }
+        
+        .section-title i {
+            font-size: 1.5rem;
+        }
+        
+        .section-title h2 {
+            font-size: 1.8rem;
+        }
+        
+        .menu-category {
+            margin-bottom: 40px;
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .dish-card {
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+            position: relative;
+        }
+        
+        .dish-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .dish-img {
+            height: 180px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .dish-info {
+            padding: 20px;
+        }
+        
+        .dish-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .dish-desc {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .dish-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dish-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        
+        .add-to-cart {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .add-to-cart:hover {
+            background-color: #219653;
+        }
+        
+        .add-to-cart:active {
+            transform: scale(0.98);
+        }
+        
+        .add-to-cart.added {
+            background-color: #f39c12;
+        }
+        
+        .add-to-cart.added:hover {
+            background-color: #e67e22;
+        }
+        
+        .cart-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .cart-items {
+            margin-top: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-item-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-price {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .quantity-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .item-quantity {
+            font-weight: 600;
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .remove-item {
+            color: #e74c3c;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        
+        .cart-summary-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #e74c3c;
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(231, 76, 60, 0.3);
+        }
+        
+        .checkout-btn:active {
+            transform: translateY(0);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-cart i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        .recent-dishes-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+        }
+        
+        .recent-dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .recent-dish-card {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .recent-dish-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .recent-dish-img {
+            height: 120px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .recent-dish-info {
+            padding: 15px;
+        }
+        
+        .recent-dish-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .recent-dish-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        
+        .recent-add-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        
+        .recent-add-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .recent-add-btn i {
+            font-size: 0.9rem;
+        }
+        
+        .clear-recent-btn {
+            background-color: #f8f9fa;
+            color: #7f8c8d;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+        
+        .clear-recent-btn:hover {
+            background-color: #e9ecef;
+        }
+        
+        .recent-empty {
+            text-align: center;
+            padding: 30px 20px;
+            color: #7f8c8d;
+        }
+        
+        .recent-empty i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-section {
+                position: static;
+                max-height: none;
+            }
+            
+            .recent-dishes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .dishes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .recent-dishes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .dish-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .tag-meat {
+            background-color: #fdeaea;
+            color: #c0392b;
+        }
+        
+        .tag-veg {
+            background-color: #eaf9f0;
+            color: #27ae60;
+        }
+        
+        .order-complete {
+            text-align: center;
+            padding: 30px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .order-complete i {
+            font-size: 4rem;
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+        
+        .order-complete h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab-button {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .tab-button:hover {
+            color: #e74c3c;
+        }
+        
+        .tab-button.active {
+            color: #e74c3c;
+        }
+        
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #e74c3c;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .recent-count-badge {
+            background-color: #e74c3c;
+            color: white;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1>家常<span>味道</span>点菜程序</h1>
+            </div>
+            <div class="cart-summary" id="cartSummary">
+                <i class="fas fa-shopping-cart"></i>
+                <div class="cart-count" id="cartCount">0</div>
+                <div class="cart-total">¥<span id="cartTotal">0.00</span></div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="menu-section">
+                <div class="section-title">
+                    <i class="fas fa-book-open"></i>
+                    <h2>家常菜菜单</h2>
+                </div>
+                
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="meat">荤菜类</button>
+                    <button class="tab-button" data-tab="veg">素菜类</button>
+                    <button class="tab-button" data-tab="recent">已点菜<span class="recent-count-badge" id="recentCountBadge">0</span></button>
+                </div>
+                
+                <div class="tab-content active" id="meat-tab">
+                    <div class="dishes-grid" id="meatDishes">
+                        <!-- 荤菜将通过JavaScript动态添加 -->
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="veg-tab">
+                    <div class="dishes-grid" id="vegDishes">
+                        <!-- 素菜将通过JavaScript动态添加 -->
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="recent-tab">
+                    <div class="recent-dishes-grid" id="recentDishes">
+                        <!-- 已点菜将通过JavaScript动态添加 -->
+                    </div>
+                    <div class="recent-empty" id="recentEmpty">
+                        <i class="fas fa-history"></i>
+                        <p>您还没有点过菜</p>
+                        <p>点过的菜会显示在这里，方便您快速添加</p>
+                    </div>
+                    <button class="clear-recent-btn" id="clearRecentBtn">
+                        <i class="fas fa-trash-alt"></i>
+                        清空已点菜记录
+                    </button>
+                </div>
+            </div>
+            
+            <div class="cart-section">
+                <div class="section-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h2>我的点菜单</h2>
+                </div>
+                
+                <div class="cart-items" id="cartItems">
+                    <div class="empty-cart" id="emptyCart">
+                        <i class="fas fa-shopping-basket"></i>
+                        <p>您的购物车是空的</p>
+                        <p>请从左侧菜单选择菜品</p>
+                    </div>
+                </div>
+                
+                <div class="cart-summary-details" id="cartDetails" style="display: none;">
+                    <div class="summary-row">
+                        <span>菜品数量:</span>
+                        <span id="itemsCount">0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>菜品金额:</span>
+                        <span>¥<span id="subtotal">0.00</span></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>打包费:</span>
+                        <span>¥<span id="packingFee">2.00</span></span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>总计:</span>
+                        <span>¥<span id="totalAmount">0.00</span></span>
+                    </div>
+                    
+                    <button class="checkout-btn" id="checkoutBtn">
+                        <i class="fas fa-credit-card"></i>
+                        确认下单
+                    </button>
+                </div>
+                
+                <div class="order-complete" id="orderComplete">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>下单成功!</h3>
+                    <p>您的订单已提交，我们正在准备您的菜品</p>
+                    <p>预计配送时间: <strong>30分钟</strong></p>
+                    <p>订单号: <strong>#2023<span id="orderNumber">0000</span></strong></p>
+                    <p style="margin-top: 15px; font-size: 0.9rem;">您可以继续点餐或联系商家修改订单</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recent-dishes-section">
+            <div class="section-title">
+                <i class="fas fa-history"></i>
+                <h2>最近点过的菜</h2>
+            </div>
+            <p style="color: #7f8c8d; margin-bottom: 15px;">点击菜品可快速添加到购物车</p>
+            <div class="recent-dishes-grid" id="quickRecentDishes">
+                <!-- 快速访问的最近点菜 -->
+            </div>
+            <div class="recent-empty" id="quickRecentEmpty">
+                <i class="fas fa-utensils"></i>
+                <p>暂无最近点过的菜</p>
+                <p>点菜后，您喜欢的菜会显示在这里</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>家常味道点菜程序 &copy; 2023 | 家常菜，家的味道</p>
+            <p>营业时间: 10:00-22:00 | 联系电话: 400-123-4567</p>
+        </footer>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">菜品已添加到购物车</span>
+    </div>
+    
+    <script>
+        // 菜品数据
+        const dishes = {
+            meat: [
+     {
+                    id: 16,
+                    name: "第16个菜",
+                    description: "经典家常菜，肥而不腻，入口即化",
+                    price: 30,
+                    image: "F:\A练习专用javascript\LIANxi\img\第16个菜.jpg"
+                },
+
+
+              {
+                    id: 15,
+                    name: "第15个菜",
+                    description: "经典家常菜，肥而不腻，入口即化",
+                    price: 30,
+                    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+
+                {
+                    id: 1,
+                    name: "红烧肉",
+                    description: "经典家常菜，肥而不腻，入口即化",
+                    price: 40,
+                    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 2,
+                    name: "糖醋排骨",
+                    description: "酸甜可口，肉质鲜嫩，色香味俱全",
+                    price: 38,
+                    image:"https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 3,
+                    name: "宫保鸡丁",
+                    description: "麻辣鲜香，鸡肉嫩滑，花生脆爽",
+                    price: 35,
+                    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 4,
+                    name: "鱼香肉丝",
+                    description: "鱼香口味，肉丝嫩滑，配菜丰富",
+                    price: 32,
+                    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 5,
+                    name: "水煮牛肉",
+                    description: "麻辣鲜香，牛肉嫩滑，配菜丰富",
+                    price: 36,
+                    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 6,
+                    name: "可乐鸡翅",
+                    description: "甜咸适中，鸡翅入味，肉质鲜嫩",
+                    price: 36,
+                    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                }
+            ],
+            veg: [
+                {
+                    id: 7,
+                    name: "麻婆豆腐",
+                    description: "麻辣鲜香，豆腐嫩滑，入口即化",
+                    price: 22,
+                    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 8,
+                    name: "地三鲜",
+                    description: "土豆、茄子、青椒炒制，香浓可口",
+                    price: 24,
+                    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 9,
+                    name: "酸辣土豆丝",
+                    description: "酸辣爽口，土豆丝脆嫩，开胃下饭",
+                    price: 18,
+                    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 10,
+                    name: "蒜蓉西兰花",
+                    description: "清淡健康，西兰花脆嫩，蒜香浓郁",
+                    price: 20,
+                    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 11,
+                    name: "西红柿炒鸡蛋",
+                    description: "家常经典，酸甜可口，营养丰富",
+                    price: 20,
+                    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+                {
+                    id: 12,
+                    name: "手撕包菜",
+                    description: "香辣爽脆，包菜鲜嫩，开胃下饭",
+                    price: 18,
+                    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+
+                   {
+                    id: 13,
+                    name: "第13个菜",
+                    description: "香辣爽脆，包菜鲜嫩，开胃下饭",
+                    price: 18,
+                    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                },
+
+                   {
+                    id: 14,
+                    name: "第14个菜",
+                    description: "香辣爽脆，包菜鲜嫩，开胃下饭",
+                    price: 18,
+                    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                }
+            ]
+        };
+
+        // 购物车数据
+        let cart = [];
+        let orderCounter = 1001;
+        
+        // 已点菜记录数据
+        let recentDishes = JSON.parse(localStorage.getItem('recentDishes')) || [];
+
+        // DOM元素
+        const meatDishesEl = document.getElementById('meatDishes');
+        const vegDishesEl = document.getElementById('vegDishes');
+        const recentDishesEl = document.getElementById('recentDishes');
+        const quickRecentDishesEl = document.getElementById('quickRecentDishes');
+        const cartItemsEl = document.getElementById('cartItems');
+        const emptyCartEl = document.getElementById('emptyCart');
+        const cartDetailsEl = document.getElementById('cartDetails');
+        const cartCountEl = document.getElementById('cartCount');
+        const cartTotalEl = document.getElementById('cartTotal');
+        const itemsCountEl = document.getElementById('itemsCount');
+        const subtotalEl = document.getElementById('subtotal');
+        const totalAmountEl = document.getElementById('totalAmount');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const notificationEl = document.getElementById('notification');
+        const notificationTextEl = document.getElementById('notificationText');
+        const cartSummaryEl = document.getElementById('cartSummary');
+        const orderCompleteEl = document.getElementById('orderComplete');
+        const orderNumberEl = document.getElementById('orderNumber');
+        const recentEmptyEl = document.getElementById('recentEmpty');
+        const quickRecentEmptyEl = document.getElementById('quickRecentEmpty');
+        const clearRecentBtn = document.getElementById('clearRecentBtn');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const recentCountBadge = document.getElementById('recentCountBadge');
+
+        // 初始化菜品展示
+        function initDishes() {
+            // 添加荤菜
+            dishes.meat.forEach(dish => {
+                const dishEl = createDishElement(dish, 'meat');
+                meatDishesEl.appendChild(dishEl);
+            });
+            
+            // 添加素菜
+            dishes.veg.forEach(dish => {
+                const dishEl = createDishElement(dish, 'veg');
+                vegDishesEl.appendChild(dishEl);
+            });
+            
+            // 更新已点菜记录
+            updateRecentDishesDisplay();
+        }
+
+        // 创建菜品元素
+        function createDishElement(dish, type) {
+            const dishEl = document.createElement('div');
+            dishEl.className = 'dish-card';
+            
+            const tagClass = type === 'meat' ? 'tag-meat' : 'tag-veg';
+            const tagText = type === 'meat' ? '荤菜' : '素菜';
+            
+            // 检查是否在已点菜记录中
+            const isRecent = recentDishes.some(item => item.id === dish.id);
+            const buttonClass = isRecent ? 'add-to-cart added' : 'add-to-cart';
+            const buttonText = isRecent ? '再次点菜' : '加入菜单';
+            const buttonIcon = isRecent ? 'fa-redo' : 'fa-plus';
+            
+            dishEl.innerHTML = `
+                <div class="dish-img" style="background-image: url('${dish.image}')"></div>
+                <div class="dish-info">
+                    <div class="dish-tag ${tagClass}">${tagText}</div>
+                    <h3 class="dish-name">${dish.name}</h3>
+                    <p class="dish-desc">${dish.description}</p>
+                    <div class="dish-footer">
+                        <div class="dish-price">¥${dish.price}</div>
+                        <button class="${buttonClass}" data-id="${dish.id}">
+                            <i class="fas ${buttonIcon}"></i>
+                            ${buttonText}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return dishEl;
+        }
+
+        // 创建已点菜元素
+        function createRecentDishElement(dish, type) {
+            const dishEl = document.createElement('div');
+            dishEl.className = 'recent-dish-card';
+            
+            dishEl.innerHTML = `
+                <div class="recent-dish-img" style="background-image: url('${dish.image}')"></div>
+                <div class="recent-dish-info">
+                    <h3 class="recent-dish-name">${dish.name}</h3>
+                    <div class="recent-dish-price">¥${dish.price}</div>
+                    <button class="recent-add-btn" data-id="${dish.id}">
+                        <i class="fas fa-plus"></i>
+                        加入菜单
+                    </button>
+                </div>
+            `;
+            
+            return dishEl;
+        }
+
+        // 更新已点菜显示
+        function updateRecentDishesDisplay() {
+            // 更新标签页中的已点菜
+            recentDishesEl.innerHTML = '';
+            quickRecentDishesEl.innerHTML = '';
+            
+            if (recentDishes.length > 0) {
+                recentEmptyEl.style.display = 'none';
+                quickRecentEmptyEl.style.display = 'none';
+                
+                // 显示最近的5个菜品在快速访问区域
+                const recentToShow = recentDishes.slice(0, 5);
+                recentToShow.forEach(dish => {
+                    const dishEl = createRecentDishElement(dish, dish.category);
+                    quickRecentDishesEl.appendChild(dishEl);
+                });
+                
+                // 显示所有已点菜在标签页中
+                recentDishes.forEach(dish => {
+                    const dishEl = createRecentDishElement(dish, dish.category);
+                    recentDishesEl.appendChild(dishEl);
+                });
+                
+                // 更新标签页徽章
+                recentCountBadge.textContent = recentDishes.length;
+            } else {
+                recentEmptyEl.style.display = 'block';
+                quickRecentEmptyEl.style.display = 'block';
+                recentCountBadge.textContent = '0';
+            }
+            
+            // 保存到本地存储
+            localStorage.setItem('recentDishes', JSON.stringify(recentDishes));
+        }
+
+        // 添加到已点菜记录
+        function addToRecent(dishId) {
+            // 查找菜品
+            let dish = null;
+            let category = null;
+            
+            // 在荤菜中查找
+            dishes.meat.forEach(d => {
+                if (d.id === dishId) {
+                    dish = d;
+                    category = 'meat';
+                }
+            });
+            
+            // 在素菜中查找
+            if (!dish) {
+                dishes.veg.forEach(d => {
+                    if (d.id === dishId) {
+                        dish = d;
+                        category = 'veg';
+                    }
+                });
+            }
+            
+            if (!dish) return;
+            
+            // 检查是否已在已点菜记录中
+            const existingItemIndex = recentDishes.findIndex(item => item.id === dishId);
+            
+            if (existingItemIndex !== -1) {
+                // 如果已存在，移到最前面
+                const [existingItem] = recentDishes.splice(existingItemIndex, 1);
+                recentDishes.unshift(existingItem);
+            } else {
+                // 否则添加新项目到最前面
+                recentDishes.unshift({
+                    id: dish.id,
+                    name: dish.name,
+                    price: dish.price,
+                    image: dish.image,
+                    category: category
+                });
+                
+                // 限制最多保存10个菜品
+                if (recentDishes.length > 10) {
+                    recentDishes.pop();
+                }
+            }
+            
+            // 更新显示
+            updateRecentDishesDisplay();
+            
+            // 更新菜单中的按钮状态
+            updateMenuButtons();
+        }
+
+        // 更新菜单按钮状态
+        function updateMenuButtons() {
+            // 更新荤菜按钮
+            const meatButtons = document.querySelectorAll('#meatDishes .add-to-cart');
+            meatButtons.forEach(button => {
+                const dishId = parseInt(button.getAttribute('data-id'));
+                const isRecent = recentDishes.some(item => item.id === dishId);
+                
+                if (isRecent) {
+                    button.classList.add('added');
+                    button.innerHTML = '<i class="fas fa-redo"></i>再次点菜';
+                } else {
+                    button.classList.remove('added');
+                    button.innerHTML = '<i class="fas fa-plus"></i>加入菜单';
+                }
+            });
+            
+            // 更新素菜按钮
+            const vegButtons = document.querySelectorAll('#vegDishes .add-to-cart');
+            vegButtons.forEach(button => {
+                const dishId = parseInt(button.getAttribute('data-id'));
+                const isRecent = recentDishes.some(item => item.id === dishId);
+                
+                if (isRecent) {
+                    button.classList.add('added');
+                    button.innerHTML = '<i class="fas fa-redo"></i>再次点菜';
+                } else {
+                    button.classList.remove('added');
+                    button.innerHTML = '<i class="fas fa-plus"></i>加入菜单';
+                }
+            });
+        }
+
+        // 添加菜品到购物车
+        function addToCart(dishId) {
+            // 查找菜品
+            let dish = null;
+            let category = null;
+            
+            // 在荤菜中查找
+            dishes.meat.forEach(d => {
+                if (d.id === dishId) {
+                    dish = d;
+                    category = 'meat';
+                }
+            });
+            
+            // 在素菜中查找
+            if (!dish) {
+                dishes.veg.forEach(d => {
+                    if (d.id === dishId) {
+                        dish = d;
+                        category = 'veg';
+                    }
+                });
+            }
+            
+            if (!dish) return;
+            
+            // 添加到已点菜记录
+            addToRecent(dishId);
+            
+            // 检查是否已在购物车中
+            const existingItemIndex = cart.findIndex(item => item.id === dishId);
+            
+            if (existingItemIndex !== -1) {
+                // 如果已存在，增加数量
+                cart[existingItemIndex].quantity += 1;
+            } else {
+                // 否则添加新项目
+                cart.push({
+                    id: dish.id,
+                    name: dish.name,
+                    price: dish.price,
+                    quantity: 1,
+                    category: category
+                });
+            }
+            
+            // 更新购物车显示
+            updateCartDisplay();
+            
+            // 显示通知
+            showNotification(`${dish.name} 已添加到购物车`);
+        }
+
+        // 更新购物车显示
+        function updateCartDisplay() {
+            // 更新购物车图标上的数量和总价
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            
+            cartCountEl.textContent = totalItems;
+            cartTotalEl.textContent = totalPrice.toFixed(2);
+            
+            // 更新购物车详情
+            if (cart.length > 0) {
+                emptyCartEl.style.display = 'none';
+                cartDetailsEl.style.display = 'block';
+                
+                // 更新购物车项目列表
+                cartItemsEl.innerHTML = '';
+                cart.forEach(item => {
+                    const cartItemEl = createCartItemElement(item);
+                    cartItemsEl.appendChild(cartItemEl);
+                });
+                
+                // 添加空购物车消息回购物车项目列表的底部
+                cartItemsEl.appendChild(emptyCartEl);
+                emptyCartEl.style.display = 'none';
+                
+                // 更新摘要
+                itemsCountEl.textContent = totalItems;
+                subtotalEl.textContent = totalPrice.toFixed(2);
+                
+                const packingFee = 2.00;
+                const totalAmount = totalPrice + packingFee;
+                totalAmountEl.textContent = totalAmount.toFixed(2);
+            } else {
+                emptyCartEl.style.display = 'block';
+                cartDetailsEl.style.display = 'none';
+            }
+        }
+
+        // 创建购物车项目元素
+        function createCartItemElement(item) {
+            const cartItemEl = document.createElement('div');
+            cartItemEl.className = 'cart-item';
+            cartItemEl.innerHTML = `
+                <div class="cart-item-info">
+                    <h4>${item.name}</h4>
+                    <div class="cart-item-price">¥${item.price.toFixed(2)}</div>
+                </div>
+                <div class="cart-item-controls">
+                    <button class="quantity-btn decrease-btn" data-id="${item.id}">-</button>
+                    <span class="item-quantity">${item.quantity}</span>
+                    <button class="quantity-btn increase-btn" data-id="${item.id}">+</button>
+                    <button class="remove-item" data-id="${item.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            return cartItemEl;
+        }
+
+        // 显示通知
+        function showNotification(message) {
+            notificationTextEl.textContent = message;
+            notificationEl.classList.add('show');
+            
+            setTimeout(() => {
+                notificationEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // 处理购物车项目数量变化
+        function updateCartItemQuantity(itemId, change) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+            
+            if (itemIndex !== -1) {
+                cart[itemIndex].quantity += change;
+                
+                // 如果数量为0或更少，从购物车中移除
+                if (cart[itemIndex].quantity <= 0) {
+                    cart.splice(itemIndex, 1);
+                    showNotification('菜品已从购物车移除');
+                }
+                
+                updateCartDisplay();
+            }
+        }
+
+        // 处理结算
+        function checkout() {
+            if (cart.length === 0) {
+                showNotification('购物车为空，请先添加菜品');
+                return;
+            }
+            
+            // 生成订单号
+            orderNumberEl.textContent = orderCounter;
+            orderCounter++;
+            
+            // 显示订单完成信息
+            cartDetailsEl.style.display = 'none';
+            orderCompleteEl.style.display = 'block';
+            
+            // 清空购物车
+            cart = [];
+            updateCartDisplay();
+            
+            // 显示成功消息
+            showNotification('订单提交成功！我们正在准备您的菜品。');
+            
+            // 3秒后恢复购物车显示
+            setTimeout(() => {
+                orderCompleteEl.style.display = 'none';
+                cartDetailsEl.style.display = 'block';
+            }, 8000);
+        }
+
+        // 清空已点菜记录
+        function clearRecentDishes() {
+            if (recentDishes.length === 0) {
+                showNotification('已点菜记录已经是空的');
+                return;
+            }
+            
+            recentDishes = [];
+            updateRecentDishesDisplay();
+            updateMenuButtons();
+            showNotification('已点菜记录已清空');
+        }
+
+        // 标签页切换
+        function switchTab(tabName) {
+            // 更新按钮状态
+            tabButtons.forEach(button => {
+                if (button.getAttribute('data-tab') === tabName) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+            
+            // 更新内容显示
+            tabContents.forEach(content => {
+                if (content.id === `${tabName}-tab`) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        // 事件监听
+        document.addEventListener('DOMContentLoaded', () => {
+            initDishes();
+            
+            // 添加菜品到购物车按钮事件
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.add-to-cart')) {
+                    const dishId = parseInt(e.target.closest('.add-to-cart').getAttribute('data-id'));
+                    addToCart(dishId);
+                }
+                
+                // 从已点菜区域添加菜品
+                if (e.target.closest('.recent-add-btn')) {
+                    const dishId = parseInt(e.target.closest('.recent-add-btn').getAttribute('data-id'));
+                    addToCart(dishId);
+                }
+                
+                // 增加数量按钮
+                if (e.target.closest('.increase-btn')) {
+                    const itemId = parseInt(e.target.closest('.increase-btn').getAttribute('data-id'));
+                    updateCartItemQuantity(itemId, 1);
+                }
+                
+                // 减少数量按钮
+                if (e.target.closest('.decrease-btn')) {
+                    const itemId = parseInt(e.target.closest('.decrease-btn').getAttribute('data-id'));
+                    updateCartItemQuantity(itemId, -1);
+                }
+                
+                // 删除项目按钮
+                if (e.target.closest('.remove-item')) {
+                    const itemId = parseInt(e.target.closest('.remove-item').getAttribute('data-id'));
+                    updateCartItemQuantity(itemId, -999); // 直接移除
+                }
+                
+                // 点击购物车摘要
+                if (e.target.closest('#cartSummary')) {
+                    const cartSection = document.querySelector('.cart-section');
+                    cartSection.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // 添加视觉反馈
+                    cartSummaryEl.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        cartSummaryEl.style.transform = 'scale(1)';
+                    }, 200);
+                }
+                
+                // 标签页切换
+                if (e.target.closest('.tab-button')) {
+                    const tabName = e.target.closest('.tab-button').getAttribute('data-tab');
+                    switchTab(tabName);
+                }
+            });
+            
+            // 结算按钮事件
+            checkoutBtn.addEventListener('click', checkout);
+            
+            // 清空已点菜记录按钮事件
+            clearRecentBtn.addEventListener('click', clearRecentDishes);
+        });
+    </script>
+</body>
+</html>
